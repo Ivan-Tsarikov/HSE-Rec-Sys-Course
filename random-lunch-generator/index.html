@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Random Lunch Generator</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>🍽️ Random Lunch Generator</h1>
+    <p>Pick a surprise lunch every day</p>
+  </header>
+
+  <main>
+    <section class="controls" aria-label="Lunch preferences">
+      <div class="control-group">
+        <label for="mood-select">Mood:</label>
+        <select id="mood-select" aria-describedby="mood-desc">
+          <option value="any">Any</option>
+          <option value="light">Light</option>
+          <option value="comfort">Comfort</option>
+        </select>
+        <span id="mood-desc" class="sr-only">Filter by mood type</span>
+      </div>
+
+      <div class="control-group">
+        <label for="time-select">Max time:</label>
+        <select id="time-select" aria-describedby="time-desc">
+          <option value="any">Any</option>
+          <option value="20">20 minutes</option>
+        </select>
+        <span id="time-desc" class="sr-only">Maximum preparation time filter</span>
+      </div>
+
+      <button id="generate-btn" type="button" aria-describedby="btn-desc">
+        Generate Lunch
+      </button>
+      <span id="btn-desc" class="sr-only">Generates a random lunch option based on your preferences</span>
+    </section>
+
+    <section class="result-section" aria-live="polite" aria-atomic="true">
+      <div id="result" class="result" role="status">
+        <span class="result-emoji" id="result-emoji" aria-hidden="true"></span>
+        <span class="result-text" id="result-text">Your lunch will appear here</span>
+      </div>
+      <p id="details" class="details"></p>
+    </section>
+  </main>
+
+  <footer>
+    <p>Press Enter or Space to generate when focused</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
