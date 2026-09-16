@@ -19,7 +19,7 @@ Tired of deciding what to eat for lunch? This lightweight web app chooses one of
 
 Open the published application:
 
-👉 **[Random Lunch Menu Generator](https://ivan-tsarikov.github.io/HSE-Rec-Sys-Course/random-lunch-generator/)**
+👉 **[LIVE DEMO](https://ivan-tsarikov.github.io/HSE-Rec-Sys-Course/random-lunch-generator/)**
 
 ## 🛠️ How It Works
 
