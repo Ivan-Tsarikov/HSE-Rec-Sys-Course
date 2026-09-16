@@ -25,7 +25,7 @@ Tired of deciding what to eat for lunch? This web app eliminates the daily dilem
 ## 🚀 Live Demo
 
 Check out the live application hosted on GitHub Pages:  
-👉 **[LIVE DEMO](https://[your-username].github.io/[your-repository-name])** 👈
+👉 **[LIVE DEMO](https://ivan-tsarikov.github.io/HSE-Rec-Sys-Course/random-lunch-generator/)** 👈
 
 *(Remember to replace `[your-username]` and `[your-repository-name]` with your actual GitHub details)*
 
