@@ -9,10 +9,14 @@ A dependency-free browser application that builds a taste profile from three wat
 - Cosine similarity between the averaged profile and each unseen movie produces a fixed Top-5 ranking.
 - All three watched movies and every zero-similarity candidate are excluded.
 - Quality-aware, deterministic tie-breaking using Bayesian-smoothed MovieLens ratings.
-- Visible profile weights plus recommendation explanations showing aligned genres, similarity, average rating, and rating count.
+- The original Week 2 interface is preserved; its result box lists five titles and their cosine-match percentages.
 - Graceful genre-only fallback when ratings cannot be loaded.
-- Strict input validation, atomic data loading, retry handling, and accessible status updates.
+- Strict input validation, atomic data loading, and accessible status updates.
 - Responsive controls, visible keyboard focus, and reduced-motion support.
+
+## Visual fidelity
+
+The starter application's centered 600-pixel card, typography, colors, spacing, stacked controls, blue action button, and bordered result box are intentionally preserved. The only visible structural extension is the addition of two movie selectors needed to build the three-title profile.
 
 ## How ranking works
 
@@ -81,7 +85,7 @@ content-based-movie-recommender/
 
 ## Failure behavior
 
-- If movie metadata fails to load or validate, controls remain disabled and a retry action is shown.
+- If movie metadata fails to load or validate, controls remain disabled and the original result box displays the error. Reloading the page retries initialization.
 - If ratings fail to load or validate, the application remains usable and falls back to deterministic genre-only ordering.
 - Repeated loads parse into new local state and do not append duplicate records.
 

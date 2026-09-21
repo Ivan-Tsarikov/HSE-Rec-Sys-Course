@@ -178,29 +178,16 @@
 
     function elements() {
         return {
-            panel: document.getElementById("recommender-panel"),
-            form: document.getElementById("recommender-form"),
+            container: document.querySelector(".container"),
             movieSelects: Array.from(document.querySelectorAll("[data-profile-movie]")),
-            recommendButton: document.getElementById("recommend-button"),
-            retryButton: document.getElementById("retry-button"),
-            status: document.getElementById("result"),
-            profileSummary: document.getElementById("profile-summary"),
-            profileGenres: document.getElementById("profile-genres"),
-            resultsHeading: document.getElementById("results-heading"),
-            recommendationList: document.getElementById("recommendation-list")
+            recommendButton: document.getElementById("recommend-btn"),
+            status: document.getElementById("result")
         };
     }
 
     function setStatus(statusElement, message, kind) {
         statusElement.textContent = message;
-        statusElement.className = `status status--${kind}`;
-    }
-
-    function clearRecommendations(ui) {
-        ui.recommendationList.replaceChildren();
-        ui.resultsHeading.hidden = true;
-        ui.profileGenres.replaceChildren();
-        ui.profileSummary.hidden = true;
+        statusElement.className = kind;
     }
 
     function setControlsEnabled(ui, enabled) {
@@ -249,68 +236,7 @@
         });
     }
 
-    function createRecommendationCard(recommendation, index) {
-        const item = document.createElement("li");
-        item.className = "recommendation-card";
-
-        const rank = document.createElement("span");
-        rank.className = "rank";
-        rank.setAttribute("aria-label", `Rank ${index + 1}`);
-        rank.textContent = String(index + 1);
-
-        const details = document.createElement("div");
-        const title = document.createElement("h3");
-        title.className = "movie-title";
-        title.textContent = recommendation.movie.title;
-
-        const reason = document.createElement("p");
-        reason.className = "movie-reason";
-        reason.textContent = `Profile overlap: ${recommendation.sharedGenres.join(", ")}`;
-
-        const rating = document.createElement("p");
-        rating.className = "movie-rating";
-        if (recommendation.rating) {
-            const ratingWord = recommendation.rating.count === 1 ? "rating" : "ratings";
-            rating.textContent = `${recommendation.rating.average.toFixed(1)}/5 from ${recommendation.rating.count} ${ratingWord}`;
-        } else {
-            rating.textContent = "Rating data unavailable";
-        }
-
-        const score = document.createElement("span");
-        score.className = "score";
-        score.textContent = `${Math.round(recommendation.similarity * 100)}% match`;
-
-        details.append(title, reason, rating);
-        item.append(rank, details, score);
-        return item;
-    }
-
-    function renderProfile(ui, profile) {
-        const genreWeights = profile.vector
-            .map((weight, index) => ({
-                name: global.MovieData.GENRE_NAMES[index],
-                weight
-            }))
-            .filter(({ weight }) => weight > 0)
-            .sort((left, right) => (
-                right.weight - left.weight || titleCollator.compare(left.name, right.name)
-            ));
-
-        const fragment = document.createDocumentFragment();
-        genreWeights.forEach(({ name, weight }) => {
-            const item = document.createElement("li");
-            item.className = "profile-genre";
-            item.textContent = `${name} ${Math.round(weight * 100)}%`;
-            fragment.appendChild(item);
-        });
-        ui.profileGenres.appendChild(fragment);
-        ui.profileSummary.hidden = false;
-    }
-
     function renderRecommendations(ui, profile, recommendations) {
-        clearRecommendations(ui);
-        renderProfile(ui, profile);
-
         if (recommendations.length === 0) {
             setStatus(
                 ui.status,
@@ -320,23 +246,23 @@
             return;
         }
 
-        const fragment = document.createDocumentFragment();
-        recommendations.forEach((recommendation, index) => {
-            fragment.appendChild(createRecommendationCard(recommendation, index));
-        });
-
-        ui.recommendationList.appendChild(fragment);
-        ui.resultsHeading.hidden = false;
-        const movieWord = recommendations.length === 1 ? "movie" : "movies";
+        const watchedTitles = profile.watchedMovies
+            .map((movie) => `"${movie.title}"`)
+            .join(", ");
+        const recommendationText = recommendations
+            .map((recommendation, index) => (
+                `${index + 1}. ${recommendation.movie.title} `
+                + `(${Math.round(recommendation.similarity * 100)}% match)`
+            ))
+            .join("; ");
         setStatus(
             ui.status,
-            `Built a profile from ${profile.watchedMovies.length} watched movies and found ${recommendations.length} similar ${movieWord}.`,
+            `Based on ${watchedTitles}, we recommend: ${recommendationText}`,
             "success"
         );
     }
 
-    function recommend(event) {
-        event.preventDefault();
+    function recommend() {
         const ui = elements();
         const selectedMovieIds = ui.movieSelects.map((selectElement) => Number(selectElement.value));
 
@@ -344,14 +270,12 @@
             !Number.isInteger(movieId) || !state.movieById.has(movieId)
         ));
         if (invalidIndex !== -1) {
-            clearRecommendations(ui);
             setStatus(ui.status, "Select three watched movies before requesting recommendations.", "error");
             ui.movieSelects[invalidIndex].focus();
             return;
         }
 
         if (new Set(selectedMovieIds).size !== PROFILE_MOVIE_COUNT) {
-            clearRecommendations(ui);
             setStatus(ui.status, "Choose three different watched movies.", "error");
             ui.movieSelects[0].focus();
             return;
@@ -368,7 +292,6 @@
             );
             renderRecommendations(ui, profile, recommendations);
         } catch (error) {
-            clearRecommendations(ui);
             setStatus(ui.status, `Recommendations could not be calculated: ${error.message}`, "error");
         } finally {
             ui.recommendButton.disabled = false;
@@ -382,9 +305,7 @@
 
         const ui = elements();
         state.loading = true;
-        ui.panel.setAttribute("aria-busy", "true");
-        ui.retryButton.hidden = true;
-        clearRecommendations(ui);
+        ui.container.setAttribute("aria-busy", "true");
         setControlsEnabled(ui, false);
         setStatus(ui.status, "Loading movie data…", "loading");
 
@@ -421,10 +342,9 @@
                 `Movie data could not be loaded: ${error.message} Run this app through a local web server and try again.`,
                 "error"
             );
-            ui.retryButton.hidden = false;
         } finally {
             state.loading = false;
-            ui.panel.setAttribute("aria-busy", "false");
+            ui.container.setAttribute("aria-busy", "false");
         }
     }
 
@@ -436,8 +356,7 @@
 
     document.addEventListener("DOMContentLoaded", () => {
         const ui = elements();
-        ui.form.addEventListener("submit", recommend);
-        ui.retryButton.addEventListener("click", initialize);
+        ui.recommendButton.addEventListener("click", recommend);
         ui.movieSelects.forEach((selectElement) => {
             selectElement.addEventListener("change", () => synchronizeMovieOptions(ui.movieSelects));
         });
