@@ -72,8 +72,14 @@ class StaticApplicationTests(unittest.TestCase):
 
     def test_scripts_are_ordered_at_the_end_of_the_original_layout(self) -> None:
         scripts = [script for script in self.parser.scripts if script.get("src")]
-        self.assertEqual([script.get("src") for script in scripts], ["data.js", "script.js"])
-        self.assertLess(self.html.index('<div class="container"'), self.html.index('<script src="data.js"'))
+        self.assertEqual(
+            [script.get("src") for script in scripts],
+            ["data.js?v=original-week2", "script.js?v=original-week2"],
+        )
+        self.assertLess(
+            self.html.index('<div class="container"'),
+            self.html.index('<script src="data.js?v=original-week2"'),
+        )
 
     def test_behavior_is_not_embedded_in_markup(self) -> None:
         self.assertEqual(self.parser.inline_click_handlers, 0)
