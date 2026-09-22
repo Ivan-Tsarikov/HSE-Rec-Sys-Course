@@ -2,6 +2,7 @@
 
 A dependency-free browser application that builds a taste profile from three watched MovieLens films and recommends five unseen titles by genre similarity. It is a corrected and extended version of the Week 2 starter from the HSE LLM4Rec course.
 
+👉 **[LIVE DEMO](https://ivan-tsarikov.github.io/HSE-Rec-Sys-Course/content-based-movie-recommender/)** 👈
 ## Features
 
 - Correct parsing of all 19 MovieLens genre flags, including `Unknown` and `Western`.
