@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collaborative Filtering Movie Recommender</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Collaborative Filtering Movie Recommender</h1>
+            <p>Compare user-based and item-based movie ratings</p>
+        </header>
+        
+        <main>
+            <div class="controls">
+                <div class="input-group">
+                    <label for="user-select">Select User:</label>
+                    <select id="user-select">
+                        <option value="">Loading users...</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label for="movie-select">Select Movie:</label>
+                    <select id="movie-select">
+                        <option value="">Loading movies...</option>
+                    </select>
+                </div>
+                
+                <button id="predict-btn" onclick="predictRating()" disabled>Predict Rating</button>
+            </div>
+            
+            <div id="status" class="status" role="status" aria-live="polite">Loading MovieLens ratings...</div>
+            <div id="result" class="result" aria-live="polite">Select a user and an unrated movie to compare the methods.</div>
+        </main>
+    </div>
+
+    <!-- The original Week 3 layout is retained; the required CF logic is local. -->
+    <script src="data.js"></script>
+    <script src="cf.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
