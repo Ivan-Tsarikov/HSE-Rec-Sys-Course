@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+tests/
+docs/
+report/
+# *_report.pdf
+# *_session.json
+*_app.zip
+*_session.json.gz
+*_session_logs.zip
